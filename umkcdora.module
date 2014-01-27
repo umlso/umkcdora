@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Custom University of Missouri - Kansas City customizations for Islandora.
+ */
+
+/**
+ * Implements hook_islandora_required_objects().
+ */
+function umkcdora_islandora_required_objects(IslandoraTuque $connection) {
+  module_load_include('inc', 'umkcdora', 'includes/utilities');
+  return array(
+    'umkcdora' => array(
+      'title' => t('University of Missouri - Kansas City'),
+      'objects' => umkcdora_construct_required_objects(),
+    ),
+  );
+}
+
+/**
+ * Implements hook_islandora_xml_form_builder_forms().
+ */
+function umkcdora_islandora_xml_form_builder_forms() {
+  module_load_include('inc', 'umkcdora', 'includes/utilities');
+  return umkcdora_retrieve_xml_form_builder_forms();
+}
+
+/**
+ * Implements hook_islandora_xml_form_builder_form_associations().
+ */
+function umkcdora_islandora_xml_form_builder_form_associations() {
+  module_load_include('inc', 'umkcdora', 'includes/utilities');
+  return umkcdora_retrieve_xml_form_builder_form_associations();
+}

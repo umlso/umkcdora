@@ -1,0 +1,8 @@
+name = UMKCdora
+description = University of Missouri - Kansas City customizations for Islandora
+package = Islandora
+version = 7.x-dev
+core = 7.x
+dependencies[] = islandora
+dependencies[] = islandora_solr
+dependencies[] = islandora_solr_metadata
