@@ -33,3 +33,51 @@ function umkcdora_islandora_xml_form_builder_form_associations() {
   module_load_include('inc', 'umkcdora', 'includes/utilities');
   return umkcdora_retrieve_xml_form_builder_form_associations();
 }
+
+function umkcdora_islandora_ingest_steps(&$form_state) {
+  module_load_include('inc', 'umkcdora', 'includes/utilities');
+
+  $umkc_ingest_steps = array();
+  $umkc_content_models = umkcdora_retrieve_content_model_mappings();
+  $content_model_mappings = array();
+  $object_content_models = $form_state['islandora']['shared_storage']['models'];
+  foreach ($object_content_models as $cmodel) {
+    if (isset($umkc_content_models[$cmodel])) {
+      foreach ($umkc_content_models[$cmodel]['mappings'] as $map) {
+        $content_model_mappings[] = $map;
+      }
+    }
+  }
+  if ($content_model_mappings) {
+    $form_state['umkc']['mappings'] = $content_model_mappings;
+    // If there is more than one mapping we will need to let the user decide
+    // which to use.
+    if (count($content_model_mappings) > 1) {
+      dsm('greater than 1');
+      $umkc_ingest_steps['umkc_select_additional_content_model'] = array(
+        'weight' => -2,
+        'type' => 'form',
+        'form_id' => 'umkcdora_select_additional_content_model_form',
+        'module' => 'umkcdora',
+        'file' => 'includes/ingest_steps.inc',
+      );
+    }
+    // Add the additional content model to the object.
+    $umkc_ingest_steps['umkc_add_content_model'] = array(
+      'weight' => -1,
+      'type' => 'callback',
+      'module' => 'umkcdora',
+      'do_function' => array(
+        'function' => 'umkcdora_add_content_model',
+        'args' => array($form_state),
+        'file' => 'includes/ingest_steps.inc',
+      ),
+      'undo_function' => array(
+        'function' => 'umkcdora_remove_content_model',
+        'args' => array($form_state),
+        'file' => 'includes/ingest_steps.inc'
+      ),
+    );
+  }
+  return $umkc_ingest_steps;
+}
