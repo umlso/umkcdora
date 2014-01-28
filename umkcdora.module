@@ -36,6 +36,12 @@ function umkcdora_islandora_xml_form_builder_form_associations() {
 
 /**
  * Implements hook_islandora_ingest_steps().
+ *
+ * The purpose of these ingest steps is to allow UMKC to add a second content
+ * model on to an object at ingest time based upon the mappigns defined
+ * in the utilities.inc file. This is being used so that UMKC can retain the
+ * view object code for types like books and videos while defining custom forms
+ * and metadata display based upon their more granular types.
  */
 function umkcdora_islandora_ingest_steps(&$form_state) {
   module_load_include('inc', 'umkcdora', 'includes/utilities');

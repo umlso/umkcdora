@@ -31,7 +31,17 @@ function umkcdora_construct_required_objects() {
  * Retrieves the UMKC to Islandora content model mappings.
  *
  * This is used in constructing the required objects, as well as for use in
- * other places. Any additional content models should be added here.
+ * other places. Any additional content models should be added here. The
+ * structure is that of content model pid => array of values. The values array
+ * contains:
+ *   -label: A string that will be when constructing the content model object.
+ *   -mappings: An array defining what the origin content models can be for
+ *   this particular UMKC content model.
+ *   -form: An array defining the form for the UMKC content model laid out in
+ *   the structure expected by hook_islandora_xml_form_builder_forms().
+ *   -association: An array defining the form association for the UMKC content
+ *   model laid out in the structure expected by
+ *   hook_islandora_xml_form_builder_form_associations().
  *
  * @return array
  *   The mapped array of UMKC content models to Islandora content models.
