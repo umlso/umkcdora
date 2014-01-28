@@ -4,6 +4,15 @@
  * @file
  * Utility functions for the UMKCdora module.
  */
+
+/**
+ * Utility function that builds up the required objects for the UMKCdora module.
+ *
+ * @see hook_islandora_required_objects()
+ *
+ * @return array
+ *   An array containing all of the required objects for the UMKCdora module.
+ */
 function umkcdora_construct_required_objects() {
   $connection = islandora_get_tuque_connection();
   $content_models = umkcdora_retrieve_content_model_mappings();
