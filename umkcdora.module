@@ -103,3 +103,17 @@ function umkcdora_islandora_collectioncmodel_islandora_view_object($object, $use
     ),
   );
 }
+
+/**
+ * Implements hook_CMODEL_PID_islandora_view_object().
+ */
+function umkcdora_islandora_newspaperissuecmodel_islandora_view_object($object, $user, $page_number) {
+  module_load_include('inc', 'islandora', 'includes/metadata');
+
+  return array(
+    'umkcdora_newspaper_metadata' => array(
+      '#weight' => 10,
+      '#markup' => islandora_retrieve_metadata_markup($object, TRUE),
+    ),
+  );
+}
