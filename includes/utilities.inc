@@ -87,7 +87,7 @@ function umkcdora_retrieve_content_model_mappings() {
         ),
       ),
     ),
-    'umkc:manuscripts' => array(
+    'umkc:manuscriptsCModel' => array(
       'label' => t('UMKC Manuscripts Content Model'),
       'mappings' => array(
         'islandora:sp_large_image_cmodel' => 'islandora:sp_large_image_cmodel',
@@ -100,7 +100,7 @@ function umkcdora_retrieve_content_model_mappings() {
       ),
       'association' => array(
         'umkc_manuscripts_association' => array(
-          'content_model' => 'umkc:manuscripts',
+          'content_model' => 'umkc:manuscriptsCModel',
           'form_name' => 'UMKC Manuscripts Form',
           'dsid' => 'MODS',
           'title_field' => array('titleInfo', 'title'),
@@ -122,7 +122,7 @@ function umkcdora_retrieve_content_model_mappings() {
       ),
       'association' => array(
         'umkc_maps_and_atlases_association' => array(
-          'content_model' => 'umkc:mapandatlasesCModel',
+          'content_model' => 'umkc:mapsandatlasesCModel',
           'form_name' => 'UMKC Maps and Atlases Form',
           'dsid' => 'MODS',
           'title_field' => array('titleInfo', 'title'),
