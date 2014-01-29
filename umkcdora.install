@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Hooks for installing/uninstalling the UMKCdora module.
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * @see umkcdora_islandora_required_objects()
+ */
+function umkcdora_install() {
+  module_load_include('inc', 'islandora', 'includes/solution_packs');
+  islandora_install_solution_pack('umkcdora');
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function umkcdora_uninstall() {
+  module_load_include('inc', 'islandora', 'includes/solution_packs');
+  islandora_install_solution_pack('umkcdora', 'uninstall');
+}
