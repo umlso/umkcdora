@@ -20,8 +20,6 @@ function umkcdora_add_content_model(&$form_state) {
   $form_state['umkc']['added_content_model'] = $model;
   // Go add the new model to all the objects.
   $objects = &islandora_ingest_form_get_objects($form_state);
-  $shared_storage = &islandora_ingest_form_get_shared_storage($form_state);
-  $shared_storage['models'][] = $model;
   foreach ($objects as $object) {
     $object_models = $object->models;
     $object_models[] = $model;

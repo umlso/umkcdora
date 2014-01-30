@@ -236,7 +236,7 @@ function umkcdora_retrieve_content_model_mappings() {
       ),
       'association' => array(
         'umkc_scrapbooks_association' => array(
-          'content_model' => 'ir:citationCModel',
+          'content_model' => 'umkc:scrapbooksCModel',
           'form_name' => 'UMKC Scrapbooks Form',
           'dsid' => 'MODS',
           'title_field' => array('titleInfo', 'title'),
