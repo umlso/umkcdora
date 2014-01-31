@@ -109,8 +109,14 @@ function umkcdora_islandora_view_object($object, $user, $page_number) {
         '#weight' => 10,
         '#markup' => islandora_retrieve_description_markup($object, TRUE),
       ),
-      'umkcdora_detailed_metadata' => array(
+      'umkcdora_collection_info' => array(
+        '#type' => 'markup',
         '#weight' => 11,
+        '#theme' => 'umkcdora_collection_info',
+        '#islandora_object' => $object,
+      ),
+      'umkcdora_detailed_metadata' => array(
+        '#weight' => 12,
         '#markup' => islandora_retrieve_metadata_markup($object, TRUE),
       ),
     );
@@ -130,4 +136,21 @@ function umkcdora_preprocess_islandora_solr_metadata_description(array &$variabl
     'display_label' => t('Date'),
     'weight' => 1,
   );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function umkcdora_theme() {
+  $item = array();
+
+  $item['umkcdora_collection_info'] = array(
+    'variables' => array(
+      'islandora_object' => NULL,
+    ),
+    'file' => 'theme/theme.inc',
+    'template' => 'theme/umkcdora-collection-info',
+  );
+
+  return $item;
 }
