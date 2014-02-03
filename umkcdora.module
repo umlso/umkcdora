@@ -63,7 +63,7 @@ function umkcdora_islandora_ingest_steps(&$form_state) {
     // which to use.
     if (count($content_model_mappings) > 1) {
       $umkc_ingest_steps['umkc_select_additional_content_model'] = array(
-        'weight' => 0,
+        'weight' => 0.10,
         'type' => 'form',
         'form_id' => 'umkcdora_select_additional_content_model_form',
         'module' => 'umkcdora',
