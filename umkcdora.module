@@ -107,7 +107,7 @@ function umkcdora_islandora_view_object($object, $user, $page_number) {
     return array(
       'umkcdora_description_metadata' => array(
         '#weight' => 10,
-        '#markup' => islandora_retrieve_description_markup($object, TRUE),
+        '#markup' => islandora_retrieve_description_markup($object),
       ),
       'umkcdora_collection_info' => array(
         '#type' => 'markup',
@@ -117,7 +117,7 @@ function umkcdora_islandora_view_object($object, $user, $page_number) {
       ),
       'umkcdora_detailed_metadata' => array(
         '#weight' => 12,
-        '#markup' => islandora_retrieve_metadata_markup($object, TRUE),
+        '#markup' => islandora_retrieve_metadata_markup($object),
       ),
     );
   }
@@ -135,6 +135,7 @@ function umkcdora_preprocess_islandora_solr_metadata_description(array &$variabl
   $variables['solr_fields'][$date_solr_field] = array(
     'display_label' => t('Date'),
     'weight' => 1,
+    'value' => array(),
   );
 }
 
