@@ -130,10 +130,11 @@ function umkcdora_islandora_view_object($object, $user, $page_number) {
  * different descriptions.
  */
 function umkcdora_preprocess_islandora_solr_metadata_description(array &$variables) {
-  $date_solr_field = 'mods_originInfo_dateIssued_dt';
+  $date_solr_field = 'mods_originInfo_dateIssued_mdt';
   $variables['combine'] = FALSE;
   $variables['solr_fields'][$date_solr_field] = array(
     'display_label' => t('Date'),
+    'formatter' => 'umkcdora_format_date',
     'weight' => 1,
     'value' => array(),
   );
@@ -154,4 +155,18 @@ function umkcdora_theme() {
   );
 
   return $item;
+}
+
+/**
+ * Function to format a single date value.
+ *
+ * @param string $date
+ *   A string representing a date.
+ *
+ * @return string
+ *   A date formatted YYYY-MM-DD.
+ */
+function umkcdora_format_date($date) {
+  $timestamp = strtotime($date);
+  return gmdate('Y-m-d', $timestamp);
 }
