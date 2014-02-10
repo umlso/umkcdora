@@ -131,6 +131,8 @@ function umkcdora_islandora_collectioncmodel_islandora_view_object($object, $use
   return array(
     'umkcdora_detailed_metadata' => array(
       '#weight' => -1,
+      '#prefix' => '<div class="umkcdora-detailed-collection-metadata">',
+      '#suffix' => '</div>',
       '#markup' => islandora_retrieve_metadata_markup($object, TRUE),
     ),
   );
