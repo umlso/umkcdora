@@ -194,3 +194,32 @@ function umkcdora_format_date($date) {
 function umkcdora_preprocess_islandora_basic_collection_wrapper(&$variables) {
   $variables['dc_array'] = array();
 }
+
+/**
+ * Alter the image_field_caption field to look like it takes a URL.
+ */
+function umkcdora_field_widget_form_alter(&$element, &$form_state, $context) {
+  // Add display_field setting to field because file_field_widget_form() assumes it is set.
+  $instance = $context['instance'];
+  $settings = $instance['settings'];
+
+  if (isset($settings['image_field_caption']) && $instance['widget']['type'] == 'image_image' && $settings['image_field_caption']) {
+    foreach (element_children($element) as $delta) {
+      // Add all extra functionality provided by the image widget.
+      $element[$delta]['#process'][] = 'umkcdora_image_field_caption_widget_process';
+    }
+  }
+}
+
+/**
+ * An element #process callback for the image_image field type.
+ *
+ * Expands the image_image type to include the alt and title fields.
+ */
+function umkcdora_image_field_caption_widget_process($element, &$form_state, $form) {
+  // Add the additional alt and title fields.
+  $element['image_field_caption']['#title'] = t('Link');
+  $element['image_field_caption']['#type'] = 'textfield';
+  $element['image_field_caption']['#description'] = 'The link the image will redirect to.';
+  return $element;
+}
