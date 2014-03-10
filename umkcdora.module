@@ -219,7 +219,8 @@ function umkcdora_field_widget_form_alter(&$element, &$form_state, $context) {
 function umkcdora_image_field_caption_widget_process($element, &$form_state, $form) {
   // Add the additional alt and title fields.
   $element['image_field_caption']['#title'] = t('Link');
-  $element['image_field_caption']['#type'] = 'textfield';
+  $element['image_field_caption']['#base_type'] = 'textfield';
+  $element['image_field_caption']['#format'] = 'plain_text';
   $element['image_field_caption']['#description'] = 'The link the image will redirect to.';
   return $element;
 }
