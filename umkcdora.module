@@ -224,3 +224,46 @@ function umkcdora_image_field_caption_widget_process($element, &$form_state, $fo
   $element['image_field_caption']['#description'] = 'The link the image will redirect to.';
   return $element;
 }
+
+/**
+ * Implements hook_block_info().
+ */
+function umkcdora_block_info() {
+  return array(
+    'umkcdora_mobile_facets' => array(
+      'info' => t('UMKC Mobile Facet Display'),
+      'name' => t('UMKC Mobile Facet Display'),
+      'cache' => DRUPAL_NO_CACHE,
+      'region' => 'content',
+      'status' => 1,
+      'weight' => -1,
+      'visibility' => BLOCK_VISIBILITY_LISTED,
+      'pages' => implode("\n", array('islandora/search/*')),
+    ),
+  );
+}
+
+/**
+ * @param string $block_name
+ * @return array
+ */
+function umkcdora_block_view($block_name = '') {
+  module_load_include('inc', 'islandora_solr_search', 'includes/blocks');
+  // This example is adapted from node.module.
+  $block = array();
+  if ($block_name == 'umkcdora_mobile_facets') {
+    $block = islandora_solr_block_view('basic_facets');
+    $block['subject'] = '<none>';
+    $fieldset = array(
+      '#type' => 'fieldset',
+      '#title' => t('Refine Search'),
+      '#attributes' => array('class' => array('collapsible', 'collapsed')),
+      '#attached' => array('js' => array('misc/collapse.js', 'misc/form.js')),
+      'content' => array(
+        '#markup' => $block['content'],
+      ),
+    );
+    $block['content'] = drupal_render($fieldset);
+  }
+  return $block;
+}
