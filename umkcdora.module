@@ -145,7 +145,7 @@ function umkcdora_islandora_collectioncmodel_islandora_view_object($object, $use
  * different descriptions.
  */
 function umkcdora_preprocess_islandora_solr_metadata_description(array &$variables) {
-  $date_solr_field = 'mods_originInfo_dateIssued_mdt';
+  $date_solr_field = variable_get('umkcdora_date_metadata_field', 'dc.date');
   $variables['combine'] = FALSE;
   $variables['solr_fields'][$date_solr_field] = array(
     'display_label' => t('Date'),
@@ -266,4 +266,21 @@ function umkcdora_block_view($block_name = '') {
     $block['content'] = drupal_render($fieldset);
   }
   return $block;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function umkcdora_menu() {
+  $items = array();
+
+  $items['admin/islandora/umkcdora'] = array(
+    'title' => 'UMKC Configuration',
+    'access arguments' => array('administer site configuration'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('umkcdora_admin_form'),
+    'file' => 'includes/admin.form.inc',
+  );
+
+  return $items;
 }
