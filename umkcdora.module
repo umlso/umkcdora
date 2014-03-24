@@ -149,7 +149,6 @@ function umkcdora_preprocess_islandora_solr_metadata_description(array &$variabl
   $variables['combine'] = FALSE;
   $variables['solr_fields'][$date_solr_field] = array(
     'display_label' => t('Date'),
-    'formatter' => 'umkcdora_format_date',
     'weight' => 1,
     'value' => array(),
   );
