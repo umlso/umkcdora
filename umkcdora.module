@@ -199,7 +199,8 @@ function umkcdora_preprocess_islandora_basic_collection_wrapper(&$variables) {
  * Alter the image_field_caption field to look like it takes a URL.
  */
 function umkcdora_field_widget_form_alter(&$element, &$form_state, $context) {
-  // Add display_field setting to field because file_field_widget_form() assumes it is set.
+  // Add display_field setting to field because file_field_widget_form() assumes
+  // it is set.
   $instance = $context['instance'];
   $settings = $instance['settings'];
 
@@ -244,8 +245,7 @@ function umkcdora_block_info() {
 }
 
 /**
- * @param string $block_name
- * @return array
+ * Implements hook_block_view().
  */
 function umkcdora_block_view($block_name = '') {
   module_load_include('inc', 'islandora_solr_search', 'includes/blocks');
