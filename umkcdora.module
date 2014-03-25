@@ -145,11 +145,10 @@ function umkcdora_islandora_collectioncmodel_islandora_view_object($object, $use
  * different descriptions.
  */
 function umkcdora_preprocess_islandora_solr_metadata_description(array &$variables) {
-  $date_solr_field = 'mods_originInfo_dateIssued_mdt';
+  $date_solr_field = variable_get('umkcdora_date_metadata_field', 'dc.date');
   $variables['combine'] = FALSE;
   $variables['solr_fields'][$date_solr_field] = array(
     'display_label' => t('Date'),
-    'formatter' => 'umkcdora_format_date',
     'weight' => 1,
     'value' => array(),
   );
@@ -173,20 +172,6 @@ function umkcdora_theme() {
 }
 
 /**
- * Function to format a single date value.
- *
- * @param string $date
- *   A string representing a date.
- *
- * @return string
- *   A date formatted YYYY-MM-DD.
- */
-function umkcdora_format_date($date) {
-  $timestamp = strtotime($date);
-  return gmdate('Y-m-d', $timestamp);
-}
-
-/**
  * Implements hook_preprocess_HOOK().
  *
  * Get rid of the DC array, 'cause we don't want it.
@@ -199,7 +184,8 @@ function umkcdora_preprocess_islandora_basic_collection_wrapper(&$variables) {
  * Alter the image_field_caption field to look like it takes a URL.
  */
 function umkcdora_field_widget_form_alter(&$element, &$form_state, $context) {
-  // Add display_field setting to field because file_field_widget_form() assumes it is set.
+  // Add display_field setting to field because file_field_widget_form() assumes
+  // it is set.
   $instance = $context['instance'];
   $settings = $instance['settings'];
 
@@ -244,8 +230,7 @@ function umkcdora_block_info() {
 }
 
 /**
- * @param string $block_name
- * @return array
+ * Implements hook_block_view().
  */
 function umkcdora_block_view($block_name = '') {
   module_load_include('inc', 'islandora_solr_search', 'includes/blocks');
@@ -266,4 +251,21 @@ function umkcdora_block_view($block_name = '') {
     $block['content'] = drupal_render($fieldset);
   }
   return $block;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function umkcdora_menu() {
+  $items = array();
+
+  $items['admin/islandora/umkcdora'] = array(
+    'title' => 'UMKC Configuration',
+    'access arguments' => array('administer site configuration'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('umkcdora_admin_form'),
+    'file' => 'includes/admin.form.inc',
+  );
+
+  return $items;
 }
