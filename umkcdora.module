@@ -172,20 +172,6 @@ function umkcdora_theme() {
 }
 
 /**
- * Function to format a single date value.
- *
- * @param string $date
- *   A string representing a date.
- *
- * @return string
- *   A date formatted YYYY-MM-DD.
- */
-function umkcdora_format_date($date) {
-  $timestamp = strtotime($date);
-  return gmdate('Y-m-d', $timestamp);
-}
-
-/**
  * Implements hook_preprocess_HOOK().
  *
  * Get rid of the DC array, 'cause we don't want it.
