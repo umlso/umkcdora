@@ -95,6 +95,7 @@ function umkcdora_islandora_ingest_steps(&$form_state) {
  */
 function umkcdora_islandora_view_object($object, $user, $page_number) {
   $models = array(
+    'islandora:newspaperCModel',
     'islandora:newspaperIssueCModel',
     'islandora:newspaperPageCModel',
     'islandora:bookCModel',
