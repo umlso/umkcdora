@@ -94,6 +94,15 @@ function umkcdora_islandora_ingest_steps(&$form_state) {
  * Implements hook_islandora_view_object().
  */
 function umkcdora_islandora_view_object($object, $user, $page_number) {
+  // Force the display label to come from the DC rather than the object label.
+  if (isset($object['DC'])) {
+    $doc = new DOMDocument();
+    if (@$doc->loadXML($object['DC']->content)) {
+      $xpath = new DOMXPath($doc);
+      drupal_set_title($xpath->evaluate('string(//dc:title[1])'));
+    }
+  }
+
   $models = array(
     'islandora:newspaperCModel',
     'islandora:newspaperIssueCModel',
