@@ -99,6 +99,7 @@ function umkcdora_islandora_view_object($object, $user, $page_number) {
     $doc = new DOMDocument();
     if (@$doc->loadXML($object['DC']->content)) {
       $xpath = new DOMXPath($doc);
+      $xpath->registerNamespace('dc', 'http://purl.org/dc/elements/1.1/');
       $title = $xpath->evaluate('string(//dc:title[1])');
       if (!empty($title)) {
         drupal_set_title($title);
