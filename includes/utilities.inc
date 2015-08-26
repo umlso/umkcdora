@@ -450,6 +450,8 @@ function umkcdora_get_access_denied_message(array $models) {
 /**
  * Helper function to map objects to their values to be used in templates.
  *
+ * Contains customizations to labels for UMKC.
+ *
  * @see islandora_objects_object_mapper().
  */
 function umkcdora_objects_object_mapper($object_id) {
