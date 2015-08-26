@@ -364,3 +364,132 @@ function umkcdora_retrieve_xml_form_builder_form_associations() {
   }
   return $form_associations;
 }
+
+/**
+ * Parses the object from the current URL and returns a content model array.
+ *
+ * @return array
+ *   The content model array, minus the FedoraObject content model.
+ */
+function umkcdora_get_models_from_url() {
+  // Get the PID.
+  if (arg(0) == 'umkc') {
+    $pid = arg(3);
+  }
+  else {
+    $pid = arg(2);
+  }
+  // Query for the models. Otherwise, we would need to load the object, which
+  // we can't, since we may be unauthorized by the time we get here.
+  $query = <<<QUERY
+SELECT ?model
+FROM <#ri>
+WHERE {
+  <info:fedora/$pid> <fedora-model:hasModel> ?model
+}
+QUERY;
+  $connection = islandora_get_tuque_connection();
+  $results = $connection->repository->ri->sparqlQuery($query);
+  // Populate an array with the model PIDs.
+  $models = array();
+  foreach ($results as $result) {
+    if ($result['model']['value'] !== "fedora-system:FedoraObject-3.0") {
+      $models[] = $result['model']['value'];
+    }
+  }
+  return $models;
+}
+
+/**
+ * Returns an appropriate message per-content-model when access is restricted.
+ *
+ * @param array $models
+ *   The array of content models for the object.
+ *
+ * @return string
+ *   The appropriate t()-vetted string to display.
+ */
+function umkcdora_get_access_denied_message(array $models) {
+  // Content model mappings.
+  $text_image = array(
+    'umkc:graphicsCModel',
+    'umkc:manuscriptsCModel',
+    'umkc:photographsCModel',
+    'umkc:postersCModel',
+    'umkc:bookCModel',
+    'umkc:mapsandatlasesCModel',
+    'umkc:newslettersCModel',
+    'umkc:newspapersCModel',
+    'umkc:pamhletsCModel',
+    'umkc:scrapbooksCModel',
+    'umkc:yearbooksCModel',
+  );
+  $audiovisual = array(
+    'umkc:soundCModel',
+    'umkc:videoCModel',
+  );
+
+  // Image message.
+  if (array_intersect($models, $text_image)) {
+    return t("This material is restricted due to copyright and is unavailable for viewing online. If you would like a copy for personal research and study, please visit <a href='@href'>@href</a>.", array(
+      '@href' => "http://library.umkc.edu/spec-col-about/services",
+    ));
+  }
+  // Audiovisual content message.
+  elseif (array_intersect($models, $audiovisual)) {
+    return t("This material is restricted due to copyright and is unavailable for listening or viewing online. If you would like a copy for personal research and study, please visit <a href='@href'>@href</a>.", array(
+      '@href' => "http://library.umkc.edu/marr-services",
+    ));
+  }
+  // Otherwise, return a generic message.
+  else {
+    return t("You are not authorized to view this page.");
+  }
+}
+
+/**
+ * Helper function to map objects to their values to be used in templates.
+ *
+ * @see islandora_objects_object_mapper().
+ */
+function umkcdora_objects_object_mapper($object_id) {
+  $o = islandora_object_load($object_id);
+  $module_path = drupal_get_path('module', 'islandora');
+  $url = "islandora/object/{$object_id}";
+  $img = array(
+    '#theme' => 'image',
+    '#path' => ($o && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $o['TN']) ?
+      "$url/datastream/TN/view" :
+      "$module_path/images/folder.png"),
+    '#attributes' => array(),
+  );
+  $img = drupal_render($img);
+  if ($o) {
+    $link_options = array('html' => TRUE, 'attributes' => array('title' => $o->label));
+    $description = NULL;
+    if (isset($o['DC']) && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $o['DC'])) {
+      $dc = DublinCore::importFromXMLString($o['DC']->content);
+      if ($dc) {
+        $dc = $dc->asArray();
+        $description = $dc['dc:description']['value'];
+      }
+    }
+    return array(
+      'label' => $o->label,
+      'class' => drupal_strtolower(preg_replace('/[^A-Za-z0-9]/', '-', $o->id)),
+      'link' => l($o->label, $url, $link_options),
+      'thumb' => l($img, $url, $link_options),
+      'description' => $description,
+    );
+  }
+  else {
+    $link_options = array('html' => TRUE, 'attributes' => array('title' => t('(Copyright-Restricted Material)')));
+    return array(
+      'label' => t('(Copyright-Restricted Material)'),
+      'class' => drupal_strtolower(preg_replace('/[^A-Za-z0-9]/', '-', $object_id)),
+      'link' => l(t('(Copyright-Restricted Material)'), $url, $link_options),
+      'thumb' => '',
+      'description' => '',
+    );
+  }
+}
