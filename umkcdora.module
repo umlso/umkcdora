@@ -283,3 +283,48 @@ function umkcdora_menu() {
 
   return $items;
 }
+
+/**
+ * Implements hook_page_delivery_callback_alter().
+ */
+function umkcdora_page_delivery_callback_alter(&$callback) {
+  if ($callback == 'drupal_deliver_html_page') {
+    $callback = 'umkcdora_deliver_html_page';
+  }
+}
+
+/**
+ * Custom page delivery callback to handle access denied errors differently.
+ *
+ * @param mixed $page_callback_result
+ *   A string defining a callback, or an integer defining an error, or NULL, or
+ *   an array containing unprocessed or processed page info.
+ */
+function umkcdora_deliver_html_page($page_callback_result) {
+  if ($page_callback_result == MENU_ACCESS_DENIED) {
+    module_load_include('inc', 'umkcdora', 'includes/utilities');
+    $models = umkcdora_get_models_from_url();
+    // Deliver our own custom HTML page.
+    if (isset($page_callback_result) && is_null(drupal_get_http_header('Content-Type'))) {
+      drupal_add_http_header('Content-Type', 'text/html; charset=utf-8');
+    }
+    global $language;
+    drupal_add_http_header('Content-Language', $language->language);
+    drupal_add_http_header('Status', '403 Forbidden');
+    watchdog('access denied', check_plain($_GET ['q']), NULL, WATCHDOG_WARNING);
+
+    // Allow for redirection.
+    if (!isset($_GET ['destination'])) {
+      if (!url_is_external($_GET ['q'])) {
+        $_GET ['destination'] = $_GET ['q'];
+      }
+    }
+    // Give our custom error page.
+    drupal_set_title(t('Access denied'));
+    print drupal_render_page(umkcdora_get_access_denied_message($models));
+  }
+  // Otherwise, just handle normally.
+  else {
+    drupal_deliver_html_page($page_callback_result);
+  }
+}
