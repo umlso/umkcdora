@@ -1,7 +1,7 @@
 (function ($) {
   Drupal.behaviors.umkcdora_append_inaccessible_message = {
     attach: function (context, settings) {
-      // Attach error event handlers s to all new img.BRnoselect elements, right
+      // Attach error event handlers to all new img.BRnoselect elements, right
       // up until the point an error event is fired from one of them.
       window.IslandoraBookReader.prototype.drawLeafs = function() {
         // Standard drawLeafs functionality.
