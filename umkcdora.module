@@ -94,6 +94,8 @@ function umkcdora_islandora_ingest_steps(&$form_state) {
  * Implements hook_islandora_view_object().
  */
 function umkcdora_islandora_view_object($object, $user, $page_number) {
+  module_load_include('inc', 'umkcdora', 'includes/utilities');
+
   // Force the display label to come from the DC rather than the object label.
   if (isset($object['DC'])) {
     $doc = new DOMDocument();
@@ -113,6 +115,12 @@ function umkcdora_islandora_view_object($object, $user, $page_number) {
     'islandora:newspaperPageCModel',
     'islandora:bookCModel',
   );
+
+  // Display a custom error message if you're locked out of the OBJ.
+  if ($object['OBJ'] && !islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $object['OBJ'])) {
+    // This text has already been filtered and is safe to run through.
+    drupal_set_message(umkcdora_get_access_denied_message($object->models));
+  }
 
   if (array_intersect($object->models, $models)) {
     module_load_include('inc', 'islandora', 'includes/metadata');
@@ -285,6 +293,15 @@ function umkcdora_menu() {
 }
 
 /**
+ * Implements hook_menu_alter().
+ *
+ * Hijacks the book 'pages' view with a custom wrapper function.
+ */
+function umkcdora_menu_alter(&$menu) {
+  $menu['islandora/object/%islandora_object/pages']['page callback'] = 'umkcdora_book_pages_menu';
+}
+
+/**
  * Implements hook_page_delivery_callback_alter().
  */
 function umkcdora_page_delivery_callback_alter(&$callback) {
@@ -311,12 +328,12 @@ function umkcdora_deliver_html_page($page_callback_result) {
     global $language;
     drupal_add_http_header('Content-Language', $language->language);
     drupal_add_http_header('Status', '403 Forbidden');
-    watchdog('access denied', check_plain($_GET ['q']), NULL, WATCHDOG_WARNING);
+    watchdog('access denied', check_plain($_GET['q']), NULL, WATCHDOG_WARNING);
 
     // Allow for redirection.
-    if (!isset($_GET ['destination'])) {
-      if (!url_is_external($_GET ['q'])) {
-        $_GET ['destination'] = $_GET ['q'];
+    if (!isset($_GET['destination'])) {
+      if (!url_is_external($_GET['q'])) {
+        $_GET['destination'] = $_GET['q'];
       }
     }
     // Give our custom error page.
@@ -327,4 +344,38 @@ function umkcdora_deliver_html_page($page_callback_result) {
   else {
     drupal_deliver_html_page($page_callback_result);
   }
+}
+
+/**
+ * Wraps pages display and shows an error message if book pages are restricted.
+ *
+ * @param AbstractObject $object
+ *   The book object to fetch the pages from.
+ *
+ * @return string
+ *   The HTML repersentation of the given books pages.
+ */
+function umkcdora_book_pages_menu(AbstractObject $object) {
+  module_load_include('inc', 'islandora_paged_content', 'includes/utilities');
+  module_load_include('inc', 'umkcdora', 'includes/utilities');
+
+  // Get metadata on the pages.
+  $pages = islandora_paged_content_get_pages($object);
+
+  // ASSUMPTION: Either all pages after the first few will be restricted,
+  // or none will be restricted.
+  $last_page_metadata = array_pop($pages);
+  if ($last_page_metadata) {
+    $page = islandora_object_load($last_page_metadata['pid']);
+
+    // Display a custom error message if you're locked out of the OBJ on the
+    // last page.
+    if ($page && $page['OBJ'] && !islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $page['OBJ'])) {
+      // This text has already been filtered and is safe to run through.
+      drupal_set_message(umkcdora_get_access_denied_message($page->models));
+    }
+  }
+
+  // Return the standard pages view.
+  return islandora_book_pages_menu($object);
 }

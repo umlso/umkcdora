@@ -420,9 +420,11 @@ function umkcdora_get_access_denied_message(array $models) {
     'umkc:mapsandatlasesCModel',
     'umkc:newslettersCModel',
     'umkc:newspapersCModel',
-    'umkc:pamhletsCModel',
+    'umkc:pamphletsCModel',
     'umkc:scrapbooksCModel',
     'umkc:yearbooksCModel',
+    'islandora:pageCModel',
+    'islandora:newspaperPageCModel',
   );
   $audiovisual = array(
     'umkc:soundCModel',
