@@ -95,6 +95,7 @@ function umkcdora_islandora_ingest_steps(&$form_state) {
  */
 function umkcdora_islandora_view_object($object, $user, $page_number) {
   module_load_include('inc', 'umkcdora', 'includes/utilities');
+  module_load_include('inc', 'islandora_paged_content', 'includes/utilities');
 
   // Force the display label to come from the DC rather than the object label.
   if (isset($object['DC'])) {
@@ -120,6 +121,18 @@ function umkcdora_islandora_view_object($object, $user, $page_number) {
   if ($object['OBJ'] && !islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $object['OBJ'])) {
     // This text has already been filtered and is safe to run through.
     drupal_set_message(umkcdora_get_access_denied_message($object->models));
+  }
+
+  // Making the same assumption as umkcdora_book_pages_menu(): if the last page
+  // is restricted, this is a restricted text.
+  $pages = islandora_paged_content_get_pages($object);
+  $last_page = array_pop($pages);
+  // If this isn't a paged content object, $last_page will be FALSE.
+  if ($last_page) {
+    $page = islandora_object_load($last_page['pid']);
+    if ($page && $page['JP2'] && !islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $page['JP2'])) {
+      drupal_set_message(umkcdora_get_access_denied_message($object->models));
+    }
   }
 
   if (array_intersect($object->models, $models)) {
@@ -158,24 +171,6 @@ function umkcdora_islandora_collectioncmodel_islandora_view_object($object, $use
       '#markup' => islandora_retrieve_metadata_markup($object, TRUE),
     ),
   );
-}
-
-/**
- * Implements hook_CMODEL_PID_islandora_view_object().
- */
-function umkcdora_islandora_bookCModel_islandora_view_object($object, $user) {
-  module_load_include('inc', 'umkcdora', 'includes/utilities');
-  module_load_include('inc', 'islandora_paged_content', 'includes/utilities');
-  // Making the same assumption as umkcdora_book_pages_menu(): if the last page
-  // is restricted, this is a restricted text.
-  $pages = islandora_paged_content_get_pages($object);
-  $last_page = array_pop($pages);
-  if ($last_page) {
-    $page = islandora_object_load($last_page['pid']);
-    if ($page && $page['JP2'] && !islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $page['JP2'])) {
-      drupal_set_message(umkcdora_get_access_denied_message($object->models));
-    }
-  }
 }
 
 /**

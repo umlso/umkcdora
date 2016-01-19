@@ -426,6 +426,7 @@ function umkcdora_get_access_denied_message(array $models) {
     'islandora:pageCModel',
     'islandora:newspaperPageCModel',
   );
+
   $audiovisual = array(
     'umkc:soundCModel',
     'umkc:videoCModel',
