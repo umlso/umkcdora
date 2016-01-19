@@ -161,6 +161,24 @@ function umkcdora_islandora_collectioncmodel_islandora_view_object($object, $use
 }
 
 /**
+ * Implements hook_CMODEL_PID_islandora_view_object().
+ */
+function umkcdora_islandora_bookCModel_islandora_view_object($object, $user) {
+  module_load_include('inc', 'umkcdora', 'includes/utilities');
+  module_load_include('inc', 'islandora_paged_content', 'includes/utilities');
+  // Making the same assumption as umkcdora_book_pages_menu(): if the last page
+  // is restricted, this is a restricted text.
+  $pages = islandora_paged_content_get_pages($object);
+  $last_page = array_pop($pages);
+  if ($last_page) {
+    $page = islandora_object_load($last_page['pid']);
+    if ($page && $page['JP2'] && !islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $page['JP2'])) {
+      drupal_set_message(umkcdora_get_access_denied_message($object->models));
+    }
+  }
+}
+
+/**
  * Implements hook_preprocess_islandora_solr_metadata_description().
  *
  * Adds a field into the description display, and disables the combination of
