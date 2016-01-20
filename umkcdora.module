@@ -130,7 +130,7 @@ function umkcdora_islandora_view_object($object, $user, $page_number) {
   // If this isn't a paged content object, $last_page will be FALSE.
   if ($last_page) {
     $page = islandora_object_load($last_page['pid']);
-    if ($page && $page['JP2'] && !islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $page['JP2'])) {
+    if ($page && $page['OBJ'] && !islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $page['OBJ'])) {
       drupal_set_message(umkcdora_get_access_denied_message($object->models));
     }
   }
