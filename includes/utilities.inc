@@ -423,6 +423,7 @@ function umkcdora_get_access_denied_message(array $models) {
     'umkc:pamphletsCModel',
     'umkc:scrapbooksCModel',
     'umkc:yearbooksCModel',
+    'islandora:bookCModel',
     'islandora:pageCModel',
     'islandora:newspaperPageCModel',
   );
