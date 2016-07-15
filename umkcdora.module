@@ -268,7 +268,7 @@ function umkcdora_block_info() {
  * Implements hook_block_view().
  */
 function umkcdora_block_view($block_name = '') {
-  module_load_include('inc', 'islandora_solr_search', 'includes/blocks');
+  module_load_include('inc', 'islandora_solr', 'includes/blocks');
   // This example is adapted from node.module.
   $block = array();
   if ($block_name == 'umkcdora_mobile_facets') {
