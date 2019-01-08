@@ -436,13 +436,13 @@ function umkcdora_get_access_denied_message(array $models) {
   // Image message.
   if (array_intersect($models, $text_image)) {
     return t("This material is restricted due to copyright and is unavailable for viewing online. If you would like a copy for personal research and study, please visit <a href='@href'>@href</a>.", array(
-      '@href' => "http://library.umkc.edu/spec-col-about/services",
+      '@href' => "https://library.umkc.edu/labudde/order-copy",
     ));
   }
   // Audiovisual content message.
   elseif (array_intersect($models, $audiovisual)) {
     return t("This material is restricted due to copyright and is unavailable for listening or viewing online. If you would like a copy for personal research and study, please visit <a href='@href'>@href</a>.", array(
-      '@href' => "http://library.umkc.edu/marr-services",
+      '@href' => "https://library.umkc.edu/marr/order-copy",
     ));
   }
   // Otherwise, return a generic message.
