@@ -149,10 +149,10 @@ function umkcdora_islandora_view_object($object, $user, $page_number) {
         '#theme' => 'umkcdora_collection_info',
         '#islandora_object' => $object,
       ),
-      'umkcdora_detailed_metadata' => array(
-        '#weight' => 12,
-        '#markup' => islandora_retrieve_metadata_markup($object),
-      ),
+      // 'umkcdora_detailed_metadata' => array(
+      //   '#weight' => 12,
+      //   '#markup' => islandora_retrieve_metadata_markup($object),
+      // ),
     );
   }
 }
